@@ -1,0 +1,275 @@
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-press: 160ms;
+  --duration-release: 100ms;
+  --duration-ui: 200ms;
+  --duration-sheet: 280ms;
+  --duration-marketing: 600ms;
+  --press-scale: 0.97;
+}
+
+.motion-press {
+  transition:
+    transform var(--duration-release) var(--ease-out),
+    background var(--duration-ui) ease,
+    color var(--duration-ui) ease,
+    border-color var(--duration-ui) ease;
+}
+
+.motion-press:active {
+  transform: scale(var(--press-scale));
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background var(--duration-ui) ease,
+    color var(--duration-ui) ease,
+    border-color var(--duration-ui) ease;
+}
+
+/* Occasional remount enter — @starting-style (quiz steps, booking path copy) */
+.motion-enter {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--duration-ui) var(--ease-out),
+    transform var(--duration-ui) var(--ease-out);
+}
+
+@starting-style {
+  .motion-enter {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* One-time scroll depth — GPU props only, under UI budget */
+.motion-reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--duration-ui) var(--ease-out),
+    transform var(--duration-ui) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.motion-reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-reveal.is-in .motion-reveal__item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-reveal__item {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--duration-ui) var(--ease-out),
+    transform var(--duration-ui) var(--ease-out);
+}
+
+.motion-reveal.is-in .motion-reveal__item:nth-child(1) {
+  transition-delay: 0ms;
+}
+.motion-reveal.is-in .motion-reveal__item:nth-child(2) {
+  transition-delay: 40ms;
+}
+.motion-reveal.is-in .motion-reveal__item:nth-child(3) {
+  transition-delay: 80ms;
+}
+.motion-reveal.is-in .motion-reveal__item:nth-child(4) {
+  transition-delay: 120ms;
+}
+.motion-reveal.is-in .motion-reveal__item:nth-child(5) {
+  transition-delay: 160ms;
+}
+.motion-reveal.is-in .motion-reveal__item:nth-child(6) {
+  transition-delay: 200ms;
+}
+
+/* Programs page — catalog: slow slide from media side */
+.motion-reveal--slide-x {
+  transform: translateX(-32px);
+  transition:
+    opacity var(--duration-marketing) var(--ease-out),
+    transform var(--duration-marketing) var(--ease-out);
+}
+
+.motion-reveal--slide-x.motion-reveal--from-end {
+  transform: translateX(32px);
+}
+
+.motion-reveal--slide-x.is-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Programs page — blueprint: section stays painted; items bounce up L→R */
+.motion-reveal--blueprint,
+.motion-reveal--blueprint.is-in {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.motion-reveal--blueprint .motion-reveal__item {
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  transition: none;
+}
+
+.motion-reveal--blueprint.is-in .motion-reveal__item {
+  /* Override generic __item settle so bounce keyframes own opacity/transform */
+  opacity: 0;
+  transform: translateY(18px) scale(0.96);
+  transition: none;
+  animation: blueprint-pop 420ms var(--ease-out) both;
+}
+
+.motion-reveal--blueprint.is-in .motion-reveal__item:nth-child(1) {
+  animation-delay: 0ms;
+}
+.motion-reveal--blueprint.is-in .motion-reveal__item:nth-child(2) {
+  animation-delay: 70ms;
+}
+.motion-reveal--blueprint.is-in .motion-reveal__item:nth-child(3) {
+  animation-delay: 140ms;
+}
+.motion-reveal--blueprint.is-in .motion-reveal__item:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+@keyframes blueprint-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.04);
+  }
+  78% {
+    opacity: 1;
+    transform: translateY(2px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Programs page — focus: neon amber flash, clockwise TL→TR→BR→BL */
+.motion-reveal--focus {
+  transform: none;
+}
+
+.motion-reveal--focus .focus-tile {
+  opacity: 0;
+  border-color: rgba(44, 40, 37, 0.1);
+  box-shadow: none;
+}
+
+.motion-reveal--focus.is-in .focus-tile {
+  animation: focus-flash-blink 820ms var(--ease-out) both;
+}
+
+.motion-reveal--focus.is-in .focus-tile:nth-child(1) {
+  animation-delay: 0ms;
+}
+.motion-reveal--focus.is-in .focus-tile:nth-child(2) {
+  animation-delay: 160ms;
+}
+.motion-reveal--focus.is-in .focus-tile:nth-child(4) {
+  animation-delay: 320ms;
+}
+.motion-reveal--focus.is-in .focus-tile:nth-child(3) {
+  animation-delay: 480ms;
+}
+
+@keyframes focus-flash-blink {
+  0% {
+    opacity: 0;
+    border-color: rgba(44, 40, 37, 0.1);
+    box-shadow: none;
+    filter: brightness(1);
+  }
+  12% {
+    opacity: 1;
+    border-color: rgba(251, 191, 36, 0.95);
+    box-shadow:
+      0 0 0 1px rgba(251, 191, 36, 0.7),
+      0 0 18px rgba(245, 158, 11, 0.55),
+      0 0 42px rgba(217, 119, 6, 0.35);
+    filter: brightness(1.08);
+  }
+  38% {
+    opacity: 1;
+    border-color: rgba(245, 158, 11, 0.75);
+    box-shadow:
+      0 0 0 1px rgba(245, 158, 11, 0.45),
+      0 0 14px rgba(245, 158, 11, 0.35);
+    filter: brightness(1.04);
+  }
+  58% {
+    opacity: 0.28;
+    border-color: rgba(253, 224, 71, 1);
+    box-shadow:
+      0 0 0 1px rgba(253, 224, 71, 0.95),
+      0 0 28px rgba(251, 191, 36, 0.85),
+      0 0 64px rgba(245, 158, 11, 0.45);
+    filter: brightness(1.25);
+  }
+  78% {
+    opacity: 1;
+    border-color: rgba(245, 158, 11, 0.9);
+    box-shadow:
+      0 0 0 1px rgba(245, 158, 11, 0.65),
+      0 0 22px rgba(245, 158, 11, 0.5),
+      0 0 48px rgba(217, 119, 6, 0.3);
+    filter: brightness(1.1);
+  }
+  100% {
+    opacity: 1;
+    border-color: rgba(44, 40, 37, 0.1);
+    box-shadow: none;
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-press:active,
+  .site-navbar__cta:active,
+  .site-footer__cta:active,
+  .cinema-btn:active,
+  .path-quiz__options button:active,
+  .proof-nav-btn:active,
+  .booking-sheet__close:active,
+  .google-btn-host button:active {
+    transform: none !important;
+  }
+
+  .motion-enter,
+  .proof-featured__quote,
+  .proof-featured__author {
+    animation: none !important;
+    transition: opacity var(--duration-ui) ease !important;
+    transform: none !important;
+  }
+
+  .motion-enter {
+    opacity: 1 !important;
+  }
+
+  .motion-reveal,
+  .motion-reveal__item,
+  .motion-reveal--focus .focus-tile {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+  }
+}

@@ -1,270 +1,617 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { MotionReveal } from '../components/MotionReveal';
+import '../styles/pages-cinema.css';
 
-const Booking = () => {
+const RETURNING_KEY = 'tcc_booking_returning';
+const CONTACT_EMAIL = 'caninecartel@gmail.com';
+const PATH_IDS = ['consultation', 'private', 'classes'];
+
+const PATHS = [
+  {
+    id: 'consultation',
+    label: 'Consultation',
+    title: 'Initial consultation',
+    desc: 'Best starting point for new clients. Tell us about your dog and we will map the right path forward.',
+    recommended: true,
+    cta: 'Send a message',
+    expect: [
+      { label: 'Duration', value: 'About 60 minutes' },
+      { label: 'Format', value: 'Message to schedule' },
+      { label: 'Prep', value: 'Note behaviors you want to change' },
+    ],
+    points: [
+      'Recommended for new clients',
+      'Behavior & goals diagnostic',
+      'Clear plan before you enroll',
+    ],
+  },
+  {
+    id: 'private',
+    label: 'Private',
+    title: 'Private 1-on-1',
+    desc: 'Personalized coaching for you and your dog — book a focused session tailored to your goals.',
+    cta: 'Book private session',
+    expect: [
+      { label: 'Duration', value: 'About 60 minutes' },
+      { label: 'Format', value: '1-on-1 in SW Sydney' },
+      { label: 'Prep', value: 'Bring goals + recent challenges' },
+    ],
+    points: [
+      '1-on-1 calendar booking',
+      'Tailored goals for your dog',
+      'Ideal for focused skill work',
+    ],
+  },
+  {
+    id: 'classes',
+    label: 'Classes',
+    title: 'Group classes',
+    desc: 'Seasonal group intakes for Puppy, Foundations, and Advanced. Join the waitlist for the next cohort.',
+    cta: 'Join waitlist',
+    expect: [
+      { label: 'Format', value: '5-week group courses' },
+      { label: 'Next intake', value: 'Openings announced seasonally' },
+      { label: 'Best start', value: 'Consult first if unsure' },
+    ],
+    points: [
+      'Puppy · Foundations · Advanced pathways',
+      'Small groups with individual feedback',
+      'Waitlist notifies you when a cohort opens',
+    ],
+  },
+];
+
+function readReturningFlag() {
+  try {
+    return localStorage.getItem(RETURNING_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markReturningClient() {
+  try {
+    localStorage.setItem(RETURNING_KEY, '1');
+  } catch {
+    /* ignore private mode */
+  }
+}
+
+function resolveInitialPath(state) {
+  if (state?.tab && PATH_IDS.includes(state.tab)) return state.tab;
+  if (state?.selectedProgram) return 'private';
+  return readReturningFlag() ? 'private' : 'consultation';
+}
+
+const WAITLIST_MAIL = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+  'Group class waitlist'
+)}&body=${encodeURIComponent(
+  'Hi — please add me to the group class waitlist.\n\nDog name:\nAge / breed:\nPreferred program (Puppy / Foundations / Advanced):\nSuburb:\nPhone:\n'
+)}`;
+
+export default function Booking() {
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState(location.state?.tab || 'private');
   const navigate = useNavigate();
+  const baseId = useId();
+  const [activePath, setActivePath] = useState(() => resolveInitialPath(location.state));
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetClosing, setSheetClosing] = useState(false);
+  const [calendarStatus, setCalendarStatus] = useState('idle');
+  const [stageEnterKey, setStageEnterKey] = useState(0);
+  const pathRef = useRef(activePath);
+  const retryTimerRef = useRef(null);
+  const sheetCloseTimerRef = useRef(null);
 
   useEffect(() => {
-    // Load Google Calendar CSS
+    pathRef.current = activePath;
+  }, [activePath]);
+
+  useEffect(() => {
+    if (location.state?.tab && PATH_IDS.includes(location.state.tab)) {
+      clearSheetCloseTimer();
+      setActivePath(location.state.tab);
+      setSheetOpen(false);
+      setSheetClosing(false);
+      return;
+    }
+    if (location.state?.selectedProgram) {
+      clearSheetCloseTimer();
+      setActivePath('private');
+      setSheetOpen(false);
+      setSheetClosing(false);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     const link = document.createElement('link');
     link.href = 'https://calendar.google.com/calendar/scheduling-button-script.css';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
 
-    // Load Google Calendar JS
     const script = document.createElement('script');
     script.src = 'https://calendar.google.com/calendar/scheduling-button-script.js';
     script.async = true;
     document.body.appendChild(script);
 
-    script.onload = () => {
-      initializeCalendars();
-    };
-
     return () => {
+      clearRetryTimer();
+      clearSheetCloseTimer();
       if (document.head.contains(link)) document.head.removeChild(link);
       if (document.body.contains(script)) document.body.removeChild(script);
     };
   }, []);
 
-  // Re-initialize when tab changes
+  function clearSheetCloseTimer() {
+    if (sheetCloseTimerRef.current) {
+      window.clearTimeout(sheetCloseTimerRef.current);
+      sheetCloseTimerRef.current = null;
+    }
+  }
+
+  function finishSheetClose() {
+    clearSheetCloseTimer();
+    setSheetOpen(false);
+    setSheetClosing(false);
+  }
+
+  function clearRetryTimer() {
+    if (retryTimerRef.current) {
+      window.clearTimeout(retryTimerRef.current);
+      retryTimerRef.current = null;
+    }
+  }
+
+  function initializeCalendar(attempt = 0) {
+    if (pathRef.current !== 'private') return;
+
+    const url = import.meta.env.VITE_GOOGLE_CALENDAR_PRIVATE_URL;
+    if (!url) {
+      setCalendarStatus('error');
+      return;
+    }
+
+    if (!window.calendar?.schedulingButton) {
+      if (attempt >= 10) {
+        setCalendarStatus('error');
+        return;
+      }
+      setCalendarStatus('loading');
+      clearRetryTimer();
+      retryTimerRef.current = window.setTimeout(() => initializeCalendar(attempt + 1), 250);
+      return;
+    }
+
+    const container = document.getElementById('booking-sheet-calendar');
+    if (!container) {
+      setCalendarStatus('error');
+      return;
+    }
+
+    try {
+      container.innerHTML = '';
+      window.calendar.schedulingButton.load({
+        url,
+        color: '#D97706',
+        label: 'Book private session',
+        target: container,
+      });
+      setCalendarStatus('ready');
+    } catch {
+      setCalendarStatus('error');
+    }
+  }
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      initializeCalendars();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [activeTab]);
-
-  const initializeCalendars = () => {
-    if (!window.calendar || !window.calendar.schedulingButton) return;
-
-    // Initialize Private Booking Button
-    const privateContainer = document.getElementById('private-booking-container');
-    if (privateContainer && activeTab === 'private') {
-      privateContainer.innerHTML = '';
-      window.calendar.schedulingButton.load({
-        url: import.meta.env.VITE_GOOGLE_CALENDAR_PRIVATE_URL,
-        color: '#F59E0B',
-        label: 'Book an appointment',
-        target: privateContainer,
-      });
+    if (!sheetOpen || activePath !== 'private') {
+      clearRetryTimer();
+      if (!sheetOpen) setCalendarStatus('idle');
+      return undefined;
     }
 
-    // Initialize Consultation Button
-    const consultContainer = document.getElementById('consult-booking-container');
-    if (consultContainer && activeTab === 'consultation') {
-      consultContainer.innerHTML = '';
-      window.calendar.schedulingButton.load({
-        url: import.meta.env.VITE_GOOGLE_CALENDAR_CONSULT_URL,
-        color: '#F59E0B',
-        label: 'Book an appointment',
-        target: consultContainer,
-      });
+    setCalendarStatus('loading');
+    const timer = window.setTimeout(() => initializeCalendar(), 60);
+    return () => {
+      window.clearTimeout(timer);
+      clearRetryTimer();
+    };
+  }, [sheetOpen, activePath]);
+
+  function selectPath(pathId, { animate = false } = {}) {
+    clearSheetCloseTimer();
+    setActivePath(pathId);
+    setSheetOpen(false);
+    setSheetClosing(false);
+    if (pathId === 'private') markReturningClient();
+    // Pointer path changes get a soft enter; keyboard arrowing stays instant.
+    if (animate) setStageEnterKey((key) => key + 1);
+  }
+
+  function closeSheet() {
+    if (!sheetOpen || sheetClosing) return;
+    setSheetClosing(true);
+    clearSheetCloseTimer();
+    sheetCloseTimerRef.current = window.setTimeout(finishSheetClose, 400);
+  }
+
+  function handleSheetAnimationEnd(e) {
+    if (e.target !== e.currentTarget) return;
+    if (!sheetClosing) return;
+    finishSheetClose();
+  }
+
+  function openSheet() {
+    if (activePath === 'private') markReturningClient();
+    clearSheetCloseTimer();
+    setSheetClosing(false);
+    setSheetOpen(true);
+  }
+
+  function onPathKeyDown(event) {
+    const index = PATH_IDS.indexOf(activePath);
+    if (index < 0) return;
+
+    let next = null;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = PATH_IDS[(index + 1) % PATH_IDS.length];
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      next = PATH_IDS[(index - 1 + PATH_IDS.length) % PATH_IDS.length];
     }
-  };
+    if (event.key === 'Home') next = PATH_IDS[0];
+    if (event.key === 'End') next = PATH_IDS[PATH_IDS.length - 1];
+
+    if (!next) return;
+    event.preventDefault();
+    selectPath(next);
+    document.getElementById(`${baseId}-path-${next}`)?.focus();
+  }
+
+  const active = PATHS.find((path) => path.id === activePath) || PATHS[0];
 
   return (
-    <div className="booking-page-v3">
-      <div className="booking-wrapper">
-        <header className="booking-header">
-          <div className="badge">ELITE SCHEDULING</div>
-          <h1>SECURE YOUR <br /><i>MOMENTUM.</i></h1>
-          <p className="header-desc">Select your service type and secure your spot in the cartel. Performance begins with precision scheduling.</p>
-        </header>
+    <div className="cinema-page cinema-page--booking">
+      <header className="booking-hero">
+        <div className="booking-hero__copy">
+          <span className="cinema-page__eyebrow">Booking</span>
+          <h1>
+            Secure your
+            <br />
+            <em>next session.</em>
+          </h1>
+          <p className="cinema-page__lead">
+            New clients start with a consultation. Choose your path, then book with one clear step.
+          </p>
+        </div>
+        <aside className="booking-hero__trust" aria-label="Service area and contact">
+          <p>
+            <strong>SW Sydney</strong>
+            Serving Cumberland, Fairfield, Liverpool, Camden &amp; Macarthur.
+          </p>
+          <a href="tel:0428077817">0428 077 817</a>
+        </aside>
+      </header>
 
-        <div className="booking-tabs">
-          <button
-            className={`tab-btn ${activeTab === 'classes' ? 'active' : ''}`}
-            onClick={() => setActiveTab('classes')}
-          >
-            Classes
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'private' ? 'active' : ''}`}
-            onClick={() => setActiveTab('private')}
-          >
-            Private Bookings
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'consultation' ? 'active' : ''}`}
-            onClick={() => setActiveTab('consultation')}
-          >
-            Consultation
-          </button>
+      <MotionReveal as="section" className="booking-shell" aria-label="Book a service">
+        <div
+          className="booking-chooser"
+          role="tablist"
+          aria-label="Booking path"
+          onKeyDown={onPathKeyDown}
+        >
+          {PATHS.map((path) => (
+            <button
+              key={path.id}
+              id={`${baseId}-path-${path.id}`}
+              type="button"
+              role="tab"
+              aria-selected={activePath === path.id}
+              aria-controls={`${baseId}-stage`}
+              tabIndex={activePath === path.id ? 0 : -1}
+              className={`booking-chooser__btn${activePath === path.id ? ' is-active' : ''}${
+                path.recommended ? ' is-recommended' : ''
+              }`}
+              onClick={() => selectPath(path.id, { animate: true })}
+            >
+              <span className="booking-chooser__label">{path.label}</span>
+              {path.recommended && <span className="booking-chooser__hint">Start here</span>}
+            </button>
+          ))}
         </div>
 
-        <div className="tab-viewport">
-          {activeTab === 'private' && (
-            <div className="tab-pane animate-fade-up">
-              <div className="portal-card">
-                <div className="portal-visual">
-                  <span className="material-symbols-outlined">event_available</span>
-                </div>
-                <h2>Private 1-on-1</h2>
-                <p>Direct calendar access for personalized performance coaching. Tailored high-intensity training for you and your dog.</p>
-                <div id="private-booking-container" className="google-btn-host"></div>
-              </div>
-            </div>
-          )}
+        <div
+          id={`${baseId}-stage`}
+          className="booking-stage"
+          role="tabpanel"
+          aria-labelledby={`${baseId}-path-${active.id}`}
+        >
+          <div
+            key={stageEnterKey}
+            className={`booking-stage__copy${stageEnterKey > 0 ? ' motion-enter' : ''}`}
+          >
+            <span className="cinema-page__eyebrow">{active.label}</span>
+            <h2>{active.title}</h2>
+            <p>{active.desc}</p>
 
-          {activeTab === 'classes' && (
-            <div className="tab-pane animate-fade-up">
-              <div className="portal-card placeholder-card">
-                <div className="portal-visual">
-                  <span className="material-symbols-outlined">groups</span>
+            <dl className="booking-expect">
+              {active.expect.map((item) => (
+                <div key={item.label} className="booking-expect__item">
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
                 </div>
-                <h2>Group Classes</h2>
-                <p>Our group training sessions are scheduled seasonally. Check our programs page for upcoming intakes and enrollment dates.</p>
-                <button className="btn-warm" onClick={() => navigate('/programs')}>View Programs</button>
-              </div>
-            </div>
-          )}
+              ))}
+            </dl>
 
-          {activeTab === 'consultation' && (
-            <div className="tab-pane animate-fade-up">
-              <div className="portal-card">
-                <div className="portal-visual">
-                  <span className="material-symbols-outlined">quick_reference_all</span>
-                </div>
-                <h2>Initial Consultation</h2>
-                <p>Mandatory for all new clients. A diagnostic session designed to audit your dog's foundation and map your customized path to mastery.</p>
-                <div id="consult-booking-container" className="google-btn-host"></div>
-              </div>
-            </div>
-          )}
+            <ul className="booking-stage__points">
+              {active.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="booking-stage__cta">
+            {activePath === 'classes' && (
+              <>
+                <a className="cinema-btn cinema-btn--amber" href={WAITLIST_MAIL}>
+                  Join waitlist
+                </a>
+                <button
+                  type="button"
+                  className="cinema-btn cinema-btn--ghost"
+                  onClick={() => navigate('/programs')}
+                >
+                  View programs
+                </button>
+                <p className="booking-stage__aside">
+                  Prefer a call? <a href="tel:0428077817">0428 077 817</a>
+                </p>
+              </>
+            )}
+
+            {activePath === 'private' && (
+              <>
+                <button type="button" className="cinema-btn cinema-btn--amber" onClick={openSheet}>
+                  {active.cta}
+                </button>
+                <p className="booking-stage__aside">You&apos;ll finish booking in Google Calendar.</p>
+              </>
+            )}
+
+            {activePath === 'consultation' && (
+              <>
+                <button type="button" className="cinema-btn cinema-btn--amber" onClick={openSheet}>
+                  {active.cta}
+                </button>
+                <p className="booking-stage__aside">Opens a short form — sends to {CONTACT_EMAIL}.</p>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      </MotionReveal>
 
-      <style>{`
-                .booking-page-v3 {
-                    min-height: 90vh;
-                    background: #FFFFFF;
-                    padding: 100px 40px;
-                }
-                .booking-wrapper {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                }
+      {(sheetOpen || sheetClosing) && activePath === 'private' && (
+        <BookingSheet
+          mode="calendar"
+          title={active.title}
+          status={calendarStatus}
+          closing={sheetClosing}
+          onClose={closeSheet}
+          onAnimationEnd={handleSheetAnimationEnd}
+          onRetry={() => {
+            setCalendarStatus('loading');
+            initializeCalendar();
+          }}
+        />
+      )}
 
-                .booking-header { margin-bottom: 60px; text-align: left; }
-                .badge { 
-                    display: inline-block; background: #FEF3C7; color: #D97706; 
-                    padding: 8px 16px; border-radius: 50px; font-size: 10px; 
-                    font-weight: 800; letter-spacing: 2px; margin-bottom: 24px;
-                }
-                .booking-header h1 { 
-                    font-size: 80px; line-height: 0.85; letter-spacing: -4px; 
-                    margin: 0 0 24px; color: #1a1a1a; 
-                }
-                .booking-header h1 i { color: #F59E0B; font-style: italic; }
-                .header-desc { font-size: 20px; color: #666; max-width: 550px; line-height: 1.5; }
-
-                .booking-tabs {
-                    display: flex;
-                    gap: 16px;
-                    margin-bottom: 60px;
-                    border-bottom: 1px solid #F0F0F0;
-                    padding-bottom: 1px;
-                }
-                .tab-btn {
-                    background: transparent;
-                    border: none;
-                    padding: 24px 0;
-                    font-size: 14px;
-                    font-weight: 800;
-                    color: #9CA3AF;
-                    cursor: pointer;
-                    position: relative;
-                    transition: color 0.3s;
-                    letter-spacing: 1px;
-                    text-transform: uppercase;
-                }
-                .tab-btn.active { color: #1a1a1a; }
-                .tab-btn.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -1px;
-                    left: 0;
-                    width: 100%;
-                    height: 2px;
-                    background: #F59E0B;
-                }
-                .tab-btn:hover { color: #444; }
-
-                .tab-pane { max-width: 800px; }
-                .portal-card {
-                    background: #1c1917;
-                    padding: 80px 60px;
-                    border-radius: 64px;
-                    color: white;
-                    box-shadow: 0 50px 100px rgba(0,0,0,0.15);
-                }
-                .portal-visual {
-                    width: 80px; height: 80px; background: rgba(245, 158, 11, 0.1);
-                    border-radius: 24px; display: flex; align-items: center; 
-                    justify-content: center; margin-bottom: 40px;
-                }
-                .portal-visual span { font-size: 42px; color: #F59E0B; }
-                
-                .portal-card h2 { font-size: 42px; margin-bottom: 20px; letter-spacing: -1px; }
-                .portal-card p { font-size: 18px; color: #888; line-height: 1.6; margin-bottom: 48px; }
-
-                .google-btn-host { display: flex; justify-content: flex-start; min-height: 60px; }
-                
-                /* Google Booking Button Override */
-                .google-btn-host button {
-                    background: #F59E0B !important;
-                    font-weight: 900 !important;
-                    text-transform: uppercase !important;
-                    letter-spacing: 2px !important;
-                    padding: 22px 48px !important;
-                    border-radius: 100px !important;
-                    font-size: 13px !important;
-                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-                    box-shadow: 0 15px 35px rgba(245, 158, 11, 0.3) !important;
-                }
-                .google-btn-host button:hover {
-                    background: #D97706 !important;
-                    transform: scale(1.05) translateY(-3px) !important;
-                    box-shadow: 0 25px 50px rgba(217, 119, 6, 0.4) !important;
-                }
-
-                .btn-warm {
-                    background: #F59E0B;
-                    color: white;
-                    border: none;
-                    padding: 22px 48px;
-                    border-radius: 100px;
-                    font-weight: 900;
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    cursor: pointer;
-                    transition: all 0.4s;
-                }
-                .btn-warm:hover {
-                    background: #D97706;
-                    transform: translateY(-3px);
-                }
-
-                .animate-fade-up {
-                    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-                }
-                @keyframes fadeUp {
-                    from { opacity: 0; transform: translateY(30px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-
-                @media (max-width: 768px) {
-                    .booking-page-v3 { padding: 80px 20px; }
-                    .booking-header h1 { font-size: 56px; }
-                    .portal-card { padding: 40px; border-radius: 40px; }
-                    .booking-tabs { overflow-x: auto; white-space: nowrap; }
-                }
-            `}</style>
+      {(sheetOpen || sheetClosing) && activePath === 'consultation' && (
+        <BookingSheet
+          mode="message"
+          title={active.title}
+          closing={sheetClosing}
+          onClose={closeSheet}
+          onAnimationEnd={handleSheetAnimationEnd}
+        />
+      )}
     </div>
   );
-};
+}
 
-export default Booking;
+function BookingSheet({ mode, title, status, closing, onClose, onAnimationEnd, onRetry }) {
+  const dialogRef = useRef(null);
+  const closeRef = useRef(null);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+
+    function onKeyDown(event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+      const focusable = dialogRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="booking-sheet" role="presentation">
+      <button type="button" className="booking-sheet__backdrop" aria-label="Close booking sheet" onClick={onClose} />
+      <div
+        ref={dialogRef}
+        className={`booking-sheet__dialog${mode === 'message' ? ' booking-sheet__dialog--form' : ''}${closing ? ' is-closing' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-sheet-title"
+        onAnimationEnd={onAnimationEnd}
+      >
+        <div className="booking-sheet__head">
+          <div>
+            <span className="cinema-page__eyebrow">{mode === 'message' ? 'Message us' : 'Book now'}</span>
+            <h2 id="booking-sheet-title">{title}</h2>
+          </div>
+          <button ref={closeRef} type="button" className="booking-sheet__close" onClick={onClose}>
+            Close
+          </button>
+        </div>
+
+        {mode === 'message' ? (
+          <ConsultMessageForm />
+        ) : (
+          <>
+            <p className="booking-sheet__handoff">You&apos;ll finish booking in Google Calendar.</p>
+
+            {status === 'loading' && (
+              <p className="booking-sheet__status" role="status">
+                Loading calendar…
+              </p>
+            )}
+
+            {status === 'error' && (
+              <div className="booking-sheet__fallback" role="alert">
+                <p>Calendar is unavailable right now. Call or text and we&apos;ll lock in a time.</p>
+                <a className="cinema-btn cinema-btn--amber" href="tel:0428077817">
+                  Call 0428 077 817
+                </a>
+                <button type="button" className="cinema-btn cinema-btn--ghost" onClick={onRetry}>
+                  Try calendar again
+                </button>
+              </div>
+            )}
+
+            <div
+              id="booking-sheet-calendar"
+              className={`google-btn-host${status === 'ready' ? ' is-ready' : ''}`}
+              hidden={status === 'error'}
+              aria-hidden={status !== 'ready'}
+            />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ConsultMessageForm() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    dog: '',
+    suburb: '',
+    message: '',
+  });
+
+  function updateField(event) {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+
+    const body = [
+      'Hi — I would like to book an initial consultation.',
+      '',
+      `Name: ${form.name.trim()}`,
+      `Email: ${form.email.trim()}`,
+      `Phone: ${form.phone.trim() || '—'}`,
+      `Dog: ${form.dog.trim() || '—'}`,
+      `Suburb: ${form.suburb.trim() || '—'}`,
+      '',
+      'Message:',
+      form.message.trim(),
+    ].join('\n');
+
+    const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+      'Consultation enquiry'
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = href;
+  }
+
+  return (
+    <form className="booking-form" onSubmit={onSubmit} noValidate={false}>
+      <p className="booking-sheet__handoff">
+        Send a short message and we will reply to schedule your consultation.
+      </p>
+
+      <div className="booking-form__grid">
+        <label className="booking-form__field">
+          <span>Your name</span>
+          <input name="name" type="text" required autoComplete="name" value={form.name} onChange={updateField} />
+        </label>
+        <label className="booking-form__field">
+          <span>Email</span>
+          <input
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            value={form.email}
+            onChange={updateField}
+          />
+        </label>
+        <label className="booking-form__field">
+          <span>Phone</span>
+          <input
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            value={form.phone}
+            onChange={updateField}
+          />
+        </label>
+        <label className="booking-form__field">
+          <span>Dog name / breed</span>
+          <input name="dog" type="text" value={form.dog} onChange={updateField} />
+        </label>
+        <label className="booking-form__field booking-form__field--full">
+          <span>Suburb</span>
+          <input name="suburb" type="text" value={form.suburb} onChange={updateField} />
+        </label>
+        <label className="booking-form__field booking-form__field--full">
+          <span>What do you want help with?</span>
+          <textarea
+            name="message"
+            required
+            rows={4}
+            value={form.message}
+            onChange={updateField}
+            placeholder="Goals, challenges, age, and anything useful to know…"
+          />
+        </label>
+      </div>
+
+      <div className="booking-form__actions">
+        <button type="submit" className="cinema-btn cinema-btn--amber">
+          Send message
+        </button>
+        <p className="booking-form__note">
+          Opens your email app to {CONTACT_EMAIL}. Or call{' '}
+          <a href="tel:0428077817">0428 077 817</a>.
+        </p>
+      </div>
+    </form>
+  );
+}

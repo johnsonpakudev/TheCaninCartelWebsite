@@ -1,0 +1,1608 @@
+/* Shared cinema styling for Programs + Method pages */
+
+.cinema-page {
+  --ink: #0f0d0c;
+  --stone: #1c1917;
+  --paper: #faf8f5;
+  --warm: #f7f4ef;
+  --amber: #d97706;
+  --amber-bright: #f59e0b;
+  --muted: #6b6560;
+  background: var(--paper);
+  color: var(--ink);
+  padding-bottom: 96px;
+}
+
+.cinema-page__hero {
+  padding: 48px 40px 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Programs page denser layout */
+.cinema-page--programs {
+  padding-bottom: 0;
+}
+
+.cinema-page--booking {
+  padding-bottom: 96px;
+}
+
+.booking-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 40px 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.55fr);
+  gap: 28px;
+  align-items: end;
+}
+
+.booking-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.booking-hero h1 em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.booking-hero__trust {
+  display: grid;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(44, 40, 37, 0.1);
+}
+
+.booking-hero__trust p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.booking-hero__trust strong {
+  display: block;
+  color: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.booking-hero__trust a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--amber);
+  text-decoration: none;
+}
+
+.booking-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 40px 0;
+}
+
+.booking-chooser {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.booking-chooser__btn {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: transparent;
+  border: 1px solid rgba(44, 40, 37, 0.12);
+  border-radius: 18px;
+  padding: 16px 18px;
+  min-height: 72px;
+  color: #78716c;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.booking-chooser__label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.booking-chooser__hint {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.booking-chooser__btn.is-recommended:not(.is-active) {
+  border-color: rgba(217, 119, 6, 0.5);
+  background: rgba(217, 119, 6, 0.06);
+  color: var(--ink);
+}
+
+.booking-chooser__btn.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.booking-chooser__btn.is-active .booking-chooser__hint {
+  color: var(--amber-bright);
+}
+
+.booking-chooser__btn:hover:not(.is-active) {
+  border-color: rgba(217, 119, 6, 0.45);
+  color: var(--ink);
+}
+
+.booking-chooser__btn:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+.booking-stage {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
+  gap: 32px;
+  align-items: end;
+  min-height: 340px;
+}
+
+.booking-stage__copy .cinema-page__eyebrow {
+  color: var(--amber-bright);
+}
+
+.booking-stage__copy h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -0.03em;
+  color: var(--paper);
+  margin: 0 0 12px;
+}
+
+.booking-stage__copy > p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(250, 248, 245, 0.58);
+  margin: 0 0 22px;
+  max-width: 48ch;
+}
+
+.booking-expect {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 22px;
+  padding: 0;
+}
+
+.booking-expect__item {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 10px;
+}
+
+.booking-expect__item dt {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+  margin: 0 0 6px;
+}
+
+.booking-expect__item dd {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(250, 248, 245, 0.88);
+  margin: 0;
+}
+
+.booking-stage__points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.booking-stage__points li {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(250, 248, 245, 0.82);
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-stage__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-stage__aside {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(250, 248, 245, 0.45);
+  margin: 0;
+}
+
+.booking-stage__aside a {
+  color: var(--amber-bright);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.booking-stage__cta .cinema-btn--ghost {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--paper);
+}
+
+.booking-stage__cta .cinema-btn--ghost:hover {
+  border-color: var(--amber-bright);
+  color: var(--amber-bright);
+}
+
+.booking-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: end center;
+  padding: 16px;
+}
+
+.booking-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(15, 13, 12, 0.55);
+  cursor: pointer;
+}
+
+.booking-sheet__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  max-height: min(88vh, 720px);
+  overflow: auto;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 28px 28px 32px;
+  border: 1px solid rgba(44, 40, 37, 0.08);
+  box-shadow: 0 24px 80px rgba(15, 13, 12, 0.28);
+  animation: booking-sheet-in var(--duration-sheet) var(--ease-out) both;
+}
+
+.booking-sheet__dialog.is-closing {
+  animation: booking-sheet-out var(--duration-sheet) var(--ease-out) both;
+}
+
+@keyframes booking-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes booking-sheet-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+}
+
+.booking-sheet__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.booking-sheet__head .cinema-page__eyebrow {
+  color: var(--amber);
+}
+
+.booking-sheet__head h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 4vw, 34px);
+  letter-spacing: -0.03em;
+  margin: 4px 0 0;
+  color: var(--ink);
+}
+
+.booking-sheet__close {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid rgba(44, 40, 37, 0.14);
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    transform var(--duration-release) var(--ease-out),
+    border-color var(--duration-ui) ease,
+    color var(--duration-ui) ease;
+}
+
+.booking-sheet__close:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.booking-sheet__close:active {
+  transform: scale(var(--press-scale));
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    border-color var(--duration-ui) ease,
+    color var(--duration-ui) ease;
+}
+
+.booking-sheet__close:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+.booking-sheet__handoff {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
+.booking-sheet__status {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--amber);
+  margin: 0 0 14px;
+}
+
+.booking-sheet__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.booking-sheet__fallback p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.booking-sheet__dialog--form {
+  width: min(560px, 100%);
+}
+
+.booking-form {
+  display: grid;
+  gap: 16px;
+}
+
+.booking-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.booking-form__field {
+  display: grid;
+  gap: 6px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.booking-form__field--full {
+  grid-column: 1 / -1;
+}
+
+.booking-form__field span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.booking-form__field input,
+.booking-form__field textarea {
+  width: 100%;
+  border: 1px solid rgba(44, 40, 37, 0.14);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.booking-form__field input:focus,
+.booking-form__field textarea:focus {
+  outline: 2px solid rgba(217, 119, 6, 0.35);
+  outline-offset: 1px;
+  border-color: rgba(217, 119, 6, 0.55);
+}
+
+.booking-form__actions {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.booking-form__note {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.booking-form__note a {
+  color: var(--amber);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.google-btn-host {
+  display: flex;
+  justify-content: flex-start;
+  min-height: 52px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.google-btn-host.is-ready {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.google-btn-host button {
+  background: #d97706 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  padding: 16px 28px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition:
+    background var(--duration-ui) ease,
+    transform var(--duration-release) var(--ease-out) !important;
+}
+
+.google-btn-host button:hover {
+  background: #b45309 !important;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .google-btn-host button:hover {
+    transform: translateY(-1px) !important;
+  }
+}
+
+.google-btn-host button:active {
+  transform: scale(var(--press-scale)) !important;
+  transition:
+    background var(--duration-ui) ease,
+    transform var(--duration-press) var(--ease-out) !important;
+}
+
+@media (min-width: 901px) {
+  .booking-sheet {
+    place-items: center;
+  }
+
+  .booking-sheet__dialog {
+    animation-name: booking-sheet-in-center;
+  }
+
+  .booking-sheet__dialog.is-closing {
+    animation-name: booking-sheet-out-center;
+  }
+
+  @keyframes booking-sheet-in-center {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes booking-sheet-out-center {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-sheet__dialog,
+  .booking-sheet__dialog.is-closing {
+    animation: booking-sheet-fade var(--duration-ui) ease both;
+  }
+
+  @keyframes booking-sheet-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .booking-sheet__dialog.is-closing {
+    animation-direction: reverse;
+  }
+}
+
+.programs-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 40px 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 32px;
+  align-items: end;
+}
+
+.programs-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.programs-hero h1 em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.programs-hero__jump {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 6px;
+}
+
+.programs-hero__jump-link {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #44403c;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(44, 40, 37, 0.1);
+}
+
+.programs-hero__jump-link span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+}
+
+.programs-hero__jump-link:hover {
+  color: var(--ink);
+}
+
+.programs-catalog {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 40px 48px;
+}
+
+.cinema-page__section {
+  padding: 56px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cinema-page__section--ink {
+  background: var(--ink);
+  color: var(--paper);
+  max-width: none;
+  padding: 64px 40px;
+}
+
+.cinema-page__section--warm {
+  background: var(--warm);
+  max-width: none;
+  padding: 64px 40px;
+}
+
+.cinema-page__eyebrow {
+  display: block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 14px;
+}
+
+.cinema-page__hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 7vw, 72px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+
+.cinema-page__hero h1 em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.cinema-page__lead {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 42ch;
+  margin: 0;
+}
+
+.cinema-page__section {
+  padding: 64px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cinema-page__section--ink {
+  background: var(--ink);
+  color: var(--paper);
+  max-width: none;
+  padding: 80px 40px;
+}
+
+.cinema-page__section--ink > .cinema-page__section-inner,
+.cinema-page__section--warm > .cinema-page__section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cinema-page__section--warm {
+  background: var(--warm);
+  max-width: none;
+  padding: 80px 40px;
+}
+
+.cinema-page__section-head {
+  margin-bottom: 36px;
+}
+
+.cinema-page__section-head h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 44px);
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+  color: inherit;
+}
+
+.cinema-page__section--ink .cinema-page__section-head h2 {
+  color: var(--paper);
+}
+
+.cinema-page__section-head p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--muted);
+  margin: 0;
+  max-width: 48ch;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.cinema-page__section--ink .cinema-page__section-head p {
+  color: rgba(250, 248, 245, 0.55);
+}
+
+.cinema-btn {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 12px;
+  border-radius: 999px;
+  transition:
+    transform var(--duration-release) var(--ease-out),
+    background var(--duration-ui) ease,
+    color var(--duration-ui) ease,
+    border-color var(--duration-ui) ease;
+}
+
+.cinema-btn:active {
+  transform: scale(var(--press-scale));
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    background var(--duration-ui) ease,
+    color var(--duration-ui) ease,
+    border-color var(--duration-ui) ease;
+}
+
+.cinema-btn:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 3px;
+}
+
+.cinema-btn--amber {
+  background: var(--amber);
+  color: #fff;
+  padding: 14px 22px;
+}
+
+.cinema-btn--amber:hover {
+  background: #b45309;
+}
+
+.cinema-btn--ink {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 22px;
+}
+
+.cinema-btn--ink:hover {
+  background: #000;
+}
+
+.cinema-btn--ghost {
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(44, 40, 37, 0.18);
+  padding: 12px 18px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+.cinema-page__section--ink .cinema-btn--ghost {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--paper);
+}
+
+.cinema-btn--ghost:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.cinema-btn--amber:hover,
+.cinema-btn--ink:hover,
+.cinema-btn--ghost:hover {
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cinema-btn--amber:hover,
+  .cinema-btn--ink:hover,
+  .cinema-btn--ghost:hover {
+    transform: translateY(-1px);
+  }
+
+  .cinema-btn--amber:hover:active,
+  .cinema-btn--ink:hover:active,
+  .cinema-btn--ghost:hover:active {
+    transform: scale(var(--press-scale));
+  }
+}
+
+/* Programs list */
+.program-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 36px;
+  padding: 28px 0;
+  border-top: 1px solid rgba(44, 40, 37, 0.1);
+  align-items: center;
+}
+
+.program-row:last-of-type {
+  border-bottom: 1px solid rgba(44, 40, 37, 0.1);
+}
+
+.program-row--flip .program-row__media {
+  order: 2;
+}
+
+.program-row--flip .program-row__copy {
+  order: 1;
+}
+
+.program-row__media {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  background: #292524;
+}
+
+.program-row__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.program-row__index {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: rgba(15, 13, 12, 0.72);
+  padding: 8px 10px;
+  border-radius: 999px;
+}
+
+.program-row__copy {
+  min-width: 0;
+}
+
+.program-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.program-row__chip {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--amber);
+}
+
+.program-row__chip--ink {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.program-row h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 3.2vw, 34px);
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.program-row__desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.program-row__perks {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.program-row__perks li {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 7px 0;
+  border-top: 1px solid rgba(44, 40, 37, 0.08);
+  color: #44403c;
+}
+
+.program-row__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.program-row__curriculum {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(44, 40, 37, 0.1);
+}
+
+.program-row__curriculum h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+
+.program-row__curriculum > p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.program-row__curriculum ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+}
+
+.program-row__curriculum li {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: #57534e;
+  padding: 10px 0;
+  border-top: 1px solid rgba(44, 40, 37, 0.08);
+  line-height: 1.45;
+}
+
+.program-row__curriculum li strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+/* Blueprint rail */
+.programs-blueprint__head {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 36px;
+}
+
+.programs-blueprint__head h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 40px);
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: var(--paper);
+}
+
+.programs-blueprint__head p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: rgba(250, 248, 245, 0.55);
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 36ch;
+}
+
+.blueprint-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.blueprint-rail li {
+  padding: 0;
+  border: none;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.blueprint-rail li:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.blueprint-rail__num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--amber-bright);
+  display: block;
+  margin-bottom: 4px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.blueprint-rail h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  line-height: 1.15;
+  color: var(--paper);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.blueprint-rail p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14.5px;
+  color: rgba(250, 248, 245, 0.58);
+  margin: 0;
+  line-height: 1.55;
+  max-width: none;
+}
+
+/* Focus tiles */
+.programs-focus__head {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.programs-focus__head h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 40px);
+  margin: 0;
+  color: var(--ink);
+}
+
+.programs-focus__head p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--muted);
+  margin: 0;
+  font-size: 15px;
+}
+
+.focus-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.focus-tile {
+  text-align: left;
+  border: 1px solid rgba(44, 40, 37, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 18px 18px 16px;
+  font: inherit;
+  color: inherit;
+  min-height: 0;
+}
+
+.focus-tile.is-open {
+  background: #fff;
+  border-color: rgba(44, 40, 37, 0.1);
+}
+
+.focus-tile h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.focus-tile p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #57534e;
+  margin: 0 0 10px;
+}
+
+.focus-tile ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.focus-tile li {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.12);
+  color: #92400e;
+}
+
+.focus-more {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.focus-more > span:first-child {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+.focus-more__chip {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid rgba(44, 40, 37, 0.12);
+  background: transparent;
+  color: #44403c;
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.focus-more__cta {
+  margin-left: auto;
+}
+
+/* FAQ */
+.programs-faq {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.programs-faq__head {
+  margin-bottom: 20px;
+}
+
+.programs-faq__head h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 4vw, 40px);
+  margin: 0;
+  color: var(--ink);
+}
+
+.faq-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 40px;
+}
+
+.faq-columns details {
+  border-top: 1px solid rgba(44, 40, 37, 0.1);
+  padding: 14px 0;
+}
+
+.faq-columns details:nth-last-child(-n + 2) {
+  border-bottom: 1px solid rgba(44, 40, 37, 0.1);
+}
+
+.faq-columns summary {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--ink);
+}
+
+.faq-columns summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-columns details[open] summary {
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.faq-columns details p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* CTA */
+.programs-cta {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 64px 40px;
+}
+
+.programs-cta__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.3fr auto;
+  gap: 24px;
+  align-items: center;
+}
+
+.programs-cta h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 52px);
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+  color: var(--paper);
+}
+
+.programs-cta h2 em {
+  font-style: italic;
+  color: var(--amber-bright);
+}
+
+.programs-cta p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: rgba(250, 248, 245, 0.55);
+  margin: 0;
+  font-size: 15px;
+}
+
+/* Legacy shared blocks kept for Method */
+.cinema-facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.cinema-facts article h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--paper);
+  margin: 0 0 8px;
+}
+
+.cinema-facts article p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(250, 248, 245, 0.55);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cinema-facts__num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--amber-bright);
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* Method page */
+.method-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 48px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 56px 40px 72px;
+}
+
+.method-hero__media {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #292524;
+}
+
+.method-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.method-hero__copy h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.method-hero__role {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--amber);
+  margin: 0 0 20px;
+}
+
+.method-hero__quote {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 2.5vw, 26px);
+  line-height: 1.35;
+  color: #44403c;
+  margin: 0 0 28px;
+  max-width: 28ch;
+}
+
+.method-hero__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.method-hero__contacts a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.method-hero__contacts a:hover {
+  color: var(--amber);
+}
+
+.method-pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.method-pillars article h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.method-pillars article p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0;
+}
+
+.cred-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 32px;
+}
+
+.cred-list li {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(250, 248, 245, 0.75);
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  list-style: none;
+}
+
+.cred-list {
+  margin: 0;
+  padding: 0;
+}
+
+.success-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.success-split__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #292524;
+}
+
+.success-split__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.success-split__copy h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+
+.success-split__copy blockquote {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  line-height: 1.4;
+  color: #44403c;
+  margin: 0 0 16px;
+}
+
+.success-split__meta {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.cinema-page__cta-band {
+  text-align: center;
+  padding: 72px 40px 0;
+}
+
+.cinema-page__cta-band h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 52px);
+  letter-spacing: -0.03em;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+
+.cinema-page__cta-band p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--muted);
+  margin: 0 0 24px;
+}
+
+@media (max-width: 900px) {
+  .cinema-page__hero,
+  .cinema-page__section,
+  .method-hero,
+  .cinema-page__section--ink,
+  .cinema-page__section--warm,
+  .programs-hero,
+  .programs-catalog,
+  .programs-cta,
+  .booking-hero,
+  .booking-shell {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .programs-hero,
+  .booking-hero,
+  .booking-stage,
+  .booking-expect,
+  .booking-chooser,
+  .program-row,
+  .program-row--flip .program-row__media,
+  .program-row--flip .program-row__copy,
+  .method-hero,
+  .method-pillars,
+  .success-split,
+  .cinema-facts,
+  .cred-list,
+  .blueprint-rail,
+  .focus-grid,
+  .faq-columns,
+  .programs-blueprint__head,
+  .programs-focus__head,
+  .programs-cta__inner,
+  .program-row__curriculum ul {
+    grid-template-columns: 1fr;
+  }
+
+  .program-row--flip .program-row__media,
+  .program-row--flip .program-row__copy {
+    order: initial;
+  }
+
+  .blueprint-rail li {
+    border-right: none;
+    border-top: none;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .program-row__media {
+    aspect-ratio: 16 / 10;
+  }
+
+  .method-hero__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .faq-columns details:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+
+  .faq-columns details:last-child {
+    border-bottom: 1px solid rgba(44, 40, 37, 0.1);
+  }
+
+  .programs-cta__inner {
+    justify-items: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .cinema-page:not(.cinema-page--programs) {
+    padding-bottom: 120px;
+  }
+
+  .cinema-page--programs {
+    padding-bottom: 100px;
+  }
+
+  .cinema-page--booking {
+    padding-bottom: 120px;
+  }
+
+  .booking-stage {
+    padding: 28px 20px;
+  }
+
+  .booking-chooser__btn {
+    min-height: 64px;
+    padding: 14px;
+  }
+
+  .booking-chooser__hint {
+    font-size: 10px;
+  }
+
+  .booking-sheet {
+    padding: 0;
+  }
+
+  .booking-sheet__dialog {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 28px;
+  }
+
+  .booking-form__grid {
+    grid-template-columns: 1fr;
+  }
+}
