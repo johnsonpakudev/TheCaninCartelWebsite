@@ -39,7 +39,7 @@ export default function Navbar() {
         </nav>
 
         <button type="button" className="site-navbar__cta motion-press" onClick={() => navigate('/booking')}>
-          Join the Cartel
+          Book training
         </button>
       </div>
     </header>

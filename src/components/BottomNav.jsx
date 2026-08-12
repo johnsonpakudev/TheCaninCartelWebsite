@@ -16,7 +16,7 @@ export default function BottomNav() {
         <span className="material-symbols-outlined" aria-hidden="true">
           school
         </span>
-        Classes
+        Programs
       </NavLink>
       <NavLink to="/about" className={({ isActive }) => `site-bottom-nav__item${isActive ? ' is-active' : ''}`}>
         <span className="material-symbols-outlined" aria-hidden="true">

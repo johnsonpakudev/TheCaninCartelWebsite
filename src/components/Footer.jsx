@@ -27,7 +27,6 @@ export default function Footer() {
             <Link to="/programs">Programs</Link>
             <Link to="/about">About</Link>
             <Link to="/booking">Booking</Link>
-            <Link to="/home-classic">Classic home</Link>
           </div>
 
           <div className="site-footer__col">
@@ -38,9 +37,9 @@ export default function Footer() {
 
           <div className="site-footer__col">
             <h4>Get started</h4>
-            <p className="site-footer__cta-copy">Book a class or consultation and start building reliability together.</p>
+            <p className="site-footer__cta-copy">Book a consult or join the waitlist — we&apos;ll match you to the right path.</p>
             <button type="button" className="site-footer__cta motion-press" onClick={() => navigate('/booking')}>
-              Secure a consult
+              Book training
             </button>
           </div>
         </div>

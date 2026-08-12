@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MotionReveal } from '../components/MotionReveal';
+import { resolveBookingFromSelection } from '../constants/programs';
 import '../styles/pages-cinema.css';
 
 const RETURNING_KEY = 'tcc_booking_returning';
@@ -22,7 +23,7 @@ const PATHS = [
     ],
     points: [
       'Recommended for new clients',
-      'Behavior & goals diagnostic',
+      'Behaviour & goals review',
       'Clear plan before you enroll',
     ],
   },
@@ -80,21 +81,26 @@ function markReturningClient() {
 
 function resolveInitialPath(state) {
   if (state?.tab && PATH_IDS.includes(state.tab)) return state.tab;
-  if (state?.selectedProgram) return 'private';
+  const fromProgram = resolveBookingFromSelection(state?.selectedProgram);
+  if (fromProgram) return fromProgram.path;
   return readReturningFlag() ? 'private' : 'consultation';
 }
 
-const WAITLIST_MAIL = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-  'Group class waitlist'
-)}&body=${encodeURIComponent(
-  'Hi — please add me to the group class waitlist.\n\nDog name:\nAge / breed:\nPreferred program (Puppy / Foundations / Advanced):\nSuburb:\nPhone:\n'
-)}`;
+function buildWaitlistMail(programLabel) {
+  const preferred = programLabel || 'Puppy / Foundations / Advanced';
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+    'Group class waitlist'
+  )}&body=${encodeURIComponent(
+    `Hi — please add me to the group class waitlist.\n\nDog name:\nAge / breed:\nPreferred program: ${preferred}\nSuburb:\nPhone:\n`
+  )}`;
+}
 
 export default function Booking() {
   const location = useLocation();
   const navigate = useNavigate();
   const baseId = useId();
   const [activePath, setActivePath] = useState(() => resolveInitialPath(location.state));
+  const [selectedProgram, setSelectedProgram] = useState(() => location.state?.selectedProgram || null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetClosing, setSheetClosing] = useState(false);
   const [calendarStatus, setCalendarStatus] = useState('idle');
@@ -111,13 +117,16 @@ export default function Booking() {
     if (location.state?.tab && PATH_IDS.includes(location.state.tab)) {
       clearSheetCloseTimer();
       setActivePath(location.state.tab);
+      setSelectedProgram(location.state.selectedProgram || null);
       setSheetOpen(false);
       setSheetClosing(false);
       return;
     }
     if (location.state?.selectedProgram) {
+      const resolved = resolveBookingFromSelection(location.state.selectedProgram);
       clearSheetCloseTimer();
-      setActivePath('private');
+      setActivePath(resolved?.path || 'consultation');
+      setSelectedProgram(location.state.selectedProgram);
       setSheetOpen(false);
       setSheetClosing(false);
     }
@@ -273,12 +282,12 @@ export default function Booking() {
         <div className="booking-hero__copy">
           <span className="cinema-page__eyebrow">Booking</span>
           <h1>
-            Secure your
+            Book your
             <br />
-            <em>next session.</em>
+            <em>next step.</em>
           </h1>
           <p className="cinema-page__lead">
-            New clients start with a consultation. Choose your path, then book with one clear step.
+            New clients usually start with a consultation. Choose your path, then take one clear next step.
           </p>
         </div>
         <aside className="booking-hero__trust" aria-label="Service area and contact">
@@ -291,6 +300,19 @@ export default function Booking() {
       </header>
 
       <MotionReveal as="section" className="booking-shell" aria-label="Book a service">
+        {selectedProgram && (
+          <div className="booking-recommendation" role="status">
+            <span className="booking-recommendation__label">Based on your choice</span>
+            <strong>{selectedProgram}</strong>
+            <button
+              type="button"
+              className="booking-recommendation__clear"
+              onClick={() => setSelectedProgram(null)}
+            >
+              Clear
+            </button>
+          </div>
+        )}
         <div
           className="booking-chooser"
           role="tablist"
@@ -350,7 +372,7 @@ export default function Booking() {
           <div className="booking-stage__cta">
             {activePath === 'classes' && (
               <>
-                <a className="cinema-btn cinema-btn--amber" href={WAITLIST_MAIL}>
+                <a className="cinema-btn cinema-btn--amber" href={buildWaitlistMail(selectedProgram)}>
                   Join waitlist
                 </a>
                 <button
@@ -406,6 +428,7 @@ export default function Booking() {
         <BookingSheet
           mode="message"
           title={active.title}
+          selectedProgram={selectedProgram}
           closing={sheetClosing}
           onClose={closeSheet}
           onAnimationEnd={handleSheetAnimationEnd}
@@ -415,7 +438,7 @@ export default function Booking() {
   );
 }
 
-function BookingSheet({ mode, title, status, closing, onClose, onAnimationEnd, onRetry }) {
+function BookingSheet({ mode, title, selectedProgram, status, closing, onClose, onAnimationEnd, onRetry }) {
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
 
@@ -476,7 +499,7 @@ function BookingSheet({ mode, title, status, closing, onClose, onAnimationEnd, o
         </div>
 
         {mode === 'message' ? (
-          <ConsultMessageForm />
+          <ConsultMessageForm selectedProgram={selectedProgram} />
         ) : (
           <>
             <p className="booking-sheet__handoff">You&apos;ll finish booking in Google Calendar.</p>
@@ -512,7 +535,7 @@ function BookingSheet({ mode, title, status, closing, onClose, onAnimationEnd, o
   );
 }
 
-function ConsultMessageForm() {
+function ConsultMessageForm({ selectedProgram }) {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -538,10 +561,13 @@ function ConsultMessageForm() {
       `Phone: ${form.phone.trim() || '—'}`,
       `Dog: ${form.dog.trim() || '—'}`,
       `Suburb: ${form.suburb.trim() || '—'}`,
+      selectedProgram ? `Suggested path: ${selectedProgram}` : null,
       '',
       'Message:',
       form.message.trim(),
-    ].join('\n');
+    ]
+      .filter((line) => line !== null)
+      .join('\n');
 
     const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
       'Consultation enquiry'

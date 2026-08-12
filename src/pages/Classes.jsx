@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PROGRAMS } from '../constants/programs';
+import { PROGRAM_IMAGES } from '../constants/images';
 import { MotionReveal } from '../components/MotionReveal';
 import '../styles/pages-cinema.css';
 
@@ -35,36 +36,17 @@ const MORE_FOCUSES = ['Excessive barking', 'Aggression', 'Resource guarding', 'H
 
 const FAQS = [
   {
-    q: 'What if I miss a class?',
-    a: 'Miss more than two sessions and you may need to re-enroll later. Refunds are not provided for non-attendance.',
-  },
-  {
     q: 'Vaccination requirements?',
     a: 'Puppies need a C3 at least 10 days before class one — bring your certificate.',
-  },
-  {
-    q: 'Who can attend?',
-    a: 'Up to two people per puppy. Ages 10+; under 18 needs a guardian. Under 10 can observe only.',
-  },
-  {
-    q: 'On-lead interaction?',
-    a: 'Dogs stay on-lead. Do not approach other puppies without permission.',
   },
   {
     q: 'What to bring?',
     a: 'Closed-toe shoes, flat collar + 1.2–1.4m lead, mat/towel, and soft high-value treats. No martingales or check chains.',
   },
   {
-    q: 'Feed before class?',
-    a: 'Skip a meal just before class when you can — hunger helps treat motivation.',
+    q: 'What if I miss a class?',
+    a: 'Life happens — tell us early when you can. Missing more than two sessions may mean re-enrolling in a later intake.',
   },
-];
-
-const BLUEPRINT = [
-  { num: '01', h: 'Precision results', p: 'Protocols that hold outside class.' },
-  { num: '02', h: 'Handler partnership', p: 'You and your dog trained as a team.' },
-  { num: '03', h: 'Small classes', p: 'Individual feedback every session.' },
-  { num: '04', h: 'Homework support', p: 'Weekly goals for home practice.' },
 ];
 
 const MEDIA_FOCUS = ['center 30%', 'center 55%', 'center 70%'];
@@ -95,7 +77,8 @@ export default function Classes() {
             <em>your dog&apos;s stage.</em>
           </h1>
           <p className="cinema-page__lead">
-            Three structured courses — from critical puppy weeks through advanced reliability.
+            Three structured courses — from critical puppy weeks through advanced reliability. Group intakes
+            open seasonally; join the waitlist to hear first.
           </p>
         </div>
         <nav className="programs-hero__jump" aria-label="Jump to program">
@@ -123,8 +106,8 @@ export default function Classes() {
             >
               <div className="program-row__media">
                 <img
-                  src="/DogTrainer5.jpg"
-                  alt=""
+                  src={PROGRAM_IMAGES[program.id].src}
+                  alt={PROGRAM_IMAGES[program.id].alt}
                   style={{ objectPosition: MEDIA_FOCUS[index % MEDIA_FOCUS.length] }}
                 />
                 <div className="program-row__index">0{index + 1}</div>
@@ -177,28 +160,16 @@ export default function Classes() {
         })}
       </section>
 
-      <MotionReveal
-        as="section"
-        when="late"
-        className="cinema-page__section cinema-page__section--ink programs-blueprint motion-reveal--blueprint"
-      >
-        <div className="cinema-page__section-inner">
-          <div className="programs-blueprint__head">
-            <div>
-              <span className="cinema-page__eyebrow">The methodology</span>
-              <h2>The Cartel blueprint</h2>
-            </div>
-            <p>Four habits that make results stick beyond the classroom.</p>
-          </div>
-          <ol className="blueprint-rail">
-            {BLUEPRINT.map((item) => (
-              <li key={item.num} className="motion-reveal__item">
-                <span className="blueprint-rail__num">{item.num}</span>
-                <h3>{item.h}</h3>
-                <p>{item.p}</p>
-              </li>
-            ))}
-          </ol>
+      <MotionReveal as="section" className="programs-cta">
+        <div className="programs-cta__inner">
+          <h2>
+            Ready to
+            <em> start?</em>
+          </h2>
+          <p>Not sure which course fits? Start with a consult — or join the waitlist for your stage.</p>
+          <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => navigate('/booking')}>
+            Book training
+          </button>
         </div>
       </MotionReveal>
 
@@ -258,19 +229,6 @@ export default function Classes() {
               <p>{faq.a}</p>
             </details>
           ))}
-        </div>
-      </MotionReveal>
-
-      <MotionReveal as="section" className="programs-cta">
-        <div className="programs-cta__inner">
-          <h2>
-            Ready to
-            <em> start?</em>
-          </h2>
-          <p>Book a class or consult — we&apos;ll match you to the right path.</p>
-          <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => navigate('/booking')}>
-            Book a class
-          </button>
         </div>
       </MotionReveal>
     </div>

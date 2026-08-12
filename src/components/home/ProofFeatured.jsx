@@ -4,7 +4,7 @@ const REVIEWS = [
   {
     id: 'sarah-luna',
     blurb: 'Off-lead reliability',
-    text: 'Douglas achieved off-lead reliability with our GSD that we thought was impossible. Truly elite handling.',
+    text: 'Douglas achieved off-lead reliability with our GSD that we thought was impossible. Calm, clear coaching.',
     author: 'Sarah & Luna',
     meta: 'German Shepherd',
     stars: 5,

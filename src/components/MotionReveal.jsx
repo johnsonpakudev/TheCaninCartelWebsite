@@ -18,19 +18,18 @@ export function MotionReveal({ as: Tag = 'div', className = '', when = 'default'
       return undefined;
     }
 
+    // Use threshold 0 — a high threshold + negative rootMargin can never fire
+    // when the observed block is taller than the shrunken root (tall sections).
     const observerOpts =
       when === 'late'
-        ? { rootMargin: '0px 0px -48% 0px', threshold: 0.28 }
-        : { rootMargin: '0px 0px -10% 0px', threshold: 0.14 };
+        ? { rootMargin: '0px 0px -42% 0px', threshold: 0 }
+        : { rootMargin: '0px 0px -10% 0px', threshold: 0 };
 
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setIsIn(true);
-        io.disconnect();
-      },
-      observerOpts
-    );
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setIsIn(true);
+      io.disconnect();
+    }, observerOpts);
 
     io.observe(el);
     return () => io.disconnect();

@@ -160,9 +160,12 @@
   }
 }
 
-/* Programs page — focus: neon amber flash, clockwise TL→TR→BR→BL */
-.motion-reveal--focus {
+/* Programs page — focus: shell stays painted; tiles neon-flash clockwise */
+.motion-reveal--focus,
+.motion-reveal--focus.is-in {
+  opacity: 1;
   transform: none;
+  transition: none;
 }
 
 .motion-reveal--focus .focus-tile {

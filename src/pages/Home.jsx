@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import ProgramsFilmstrip from '../components/home/ProgramsFilmstrip';
 import PathQuiz from '../components/home/PathQuiz';
 import ProofFeatured from '../components/home/ProofFeatured';
+import { SITE_IMAGES } from '../constants/images';
 import '../components/home/home-cinema.css';
 
 export default function Home() {
@@ -11,26 +12,27 @@ export default function Home() {
     <div className="home-cinema">
       <section className="cinema-hero" aria-label="Canine Cartel hero">
         <div className="cinema-hero__media">
-          <img src="/DogTrainer5.jpg" alt="Handler working with a dog in training" />
+          <img src={SITE_IMAGES.homeHero.src} alt={SITE_IMAGES.homeHero.alt} />
           <div className="cinema-hero__shade" />
-            </div>
+        </div>
         <div className="cinema-hero__content">
           <div className="cinema-hero__brand">Canine Cartel</div>
           <h1 className="cinema-hero__title">
-            MASTER
+            Steady dogs.
             <br />
-            YOUR <em>PACK.</em>
+            <em>Clear handlers.</em>
           </h1>
           <p className="cinema-hero__sub">
-            We don&apos;t just train dogs — we build handlers. Elite communication and science-based results.
+            Science-led training with Douglas Davenport — manners that hold at home, on walks, and across SW
+            Sydney.
           </p>
           <button
             type="button"
             className="cinema-btn cinema-btn--primary"
-            onClick={() => navigate('/booking', { state: { tab: 'private' } })}
+            onClick={() => navigate('/booking', { state: { tab: 'consultation' } })}
           >
-            Join the Cartel
-              </button>
+            Book training
+          </button>
         </div>
       </section>
 
@@ -50,8 +52,8 @@ export default function Home() {
               clearer relationship — manners that hold at home, on walks, and out in the world.
             </p>
             <p>
-              Sessions are warm, structured, and science-led: reward-based teaching, patient coaching for
-              you as the handler, and practice in the everyday places that matter across SW Sydney.
+              Sessions are warm, structured, and science-led: reward-based teaching, patient coaching for you
+              as the handler, and practice in the everyday places that matter across SW Sydney.
             </p>
             <dl className="cinema-intro__facts">
               <div>
@@ -80,15 +82,15 @@ export default function Home() {
 
       <section className="cinema-close" aria-label="Book training">
         <h2>
-          READY TO
+          Ready to
           <br />
-          <em>LEAD?</em>
+          <em>begin?</em>
         </h2>
-        <p>Book a class or consultation and start building reliability that holds in the real world.</p>
+        <p>Start with a consult, or join the waitlist for the next group intake.</p>
         <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => navigate('/booking')}>
-          Book a class
+          Book training
         </button>
       </section>
-        </div>
+    </div>
   );
 }

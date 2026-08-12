@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SITE_IMAGES } from '../../constants/images';
 
 const PANELS = [
   {
@@ -8,8 +9,9 @@ const PANELS = [
     title: 'Puppy Preschool',
     desc: 'Socialization, basic manners, and preventing bad habits before they start.',
     bullets: ['House Training Blueprint', 'Social Confidence Skills', 'Marker Neutrality'],
-    btnText: 'Secure a Spot',
-    img: '/DogTrainer5.jpg',
+    btnText: 'Join waitlist',
+    img: SITE_IMAGES.filmstripPuppy.src,
+    imgAlt: SITE_IMAGES.filmstripPuppy.alt,
   },
   {
     id: 'foundations',
@@ -17,8 +19,9 @@ const PANELS = [
     title: 'Foundations for Focus',
     desc: 'The essential bridge between puppyhood and adult reliability.',
     bullets: ['Reliable Impulse Control', 'Stress-Free Walking', 'Cooperative Care'],
-    btnText: 'Start Foundations',
-    img: '/DogTrainer5.jpg',
+    btnText: 'Join waitlist',
+    img: SITE_IMAGES.filmstripFoundations.src,
+    imgAlt: SITE_IMAGES.filmstripFoundations.alt,
   },
   {
     id: 'advanced',
@@ -26,8 +29,9 @@ const PANELS = [
     title: 'Advanced Skills',
     desc: 'High-level independence and total harmony with your dog.',
     bullets: ['Off-Lead Reliability', 'Distance Mastery', 'Neutrality in Public'],
-    btnText: 'Master Advanced',
-    img: '/DogTrainer5.jpg',
+    btnText: 'Join waitlist',
+    img: SITE_IMAGES.filmstripAdvanced.src,
+    imgAlt: SITE_IMAGES.filmstripAdvanced.alt,
   },
 ];
 
@@ -45,7 +49,7 @@ function Panel({ panel, onBook }) {
         </ul>
       </div>
       <div className="filmstrip-panel__media">
-        <img src={panel.img} alt={`${panel.title} training`} />
+        <img src={panel.img} alt={panel.imgAlt || `${panel.title} training`} />
         <div className="filmstrip-panel__media-cta">
           <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => onBook(panel.title)}>
             {panel.btnText}

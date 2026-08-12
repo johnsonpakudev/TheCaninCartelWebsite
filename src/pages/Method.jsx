@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { MotionReveal } from '../components/MotionReveal';
+import { SITE_IMAGES } from '../constants/images';
 import '../styles/pages-cinema.css';
 
 const PILLARS = [
@@ -27,7 +28,7 @@ export default function Method() {
     <div className="cinema-page">
       <section className="method-hero" aria-label="Douglas Davenport">
         <div className="method-hero__media">
-          <img src="/DogTrainer5.jpg" alt="Douglas Davenport working with a dog" />
+          <img src={SITE_IMAGES.aboutHero.src} alt={SITE_IMAGES.aboutHero.alt} />
         </div>
         <div className="method-hero__copy">
           <span className="cinema-page__eyebrow">About</span>
@@ -36,7 +37,7 @@ export default function Method() {
             <br />
             Davenport
           </h1>
-          <p className="method-hero__role">Principal consultant &amp; training architect</p>
+          <p className="method-hero__role">Principal consultant &amp; trainer</p>
           <p className="method-hero__quote">
             “We bridge the gap between human and canine — building partnerships that hold in real life.”
           </p>
@@ -47,8 +48,12 @@ export default function Method() {
               @the_caninecartel
             </a>
           </div>
-          <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => navigate('/booking')}>
-            Book a consult
+          <button
+            type="button"
+            className="cinema-btn cinema-btn--amber"
+            onClick={() => navigate('/booking', { state: { tab: 'consultation' } })}
+          >
+            Book training
           </button>
         </div>
       </section>
@@ -95,7 +100,7 @@ export default function Method() {
         </div>
         <div className="success-split">
           <div className="success-split__media">
-            <img src="/DogTrainer5.jpg" alt="Training result" />
+            <img src={SITE_IMAGES.aboutSuccess.src} alt={SITE_IMAGES.aboutSuccess.alt} />
           </div>
           <div className="success-split__copy">
             <h3>From unmanageable to calm and responsive</h3>
@@ -109,10 +114,10 @@ export default function Method() {
       </MotionReveal>
 
       <MotionReveal className="cinema-page__cta-band">
-        <h2>Join the Cartel</h2>
-        <p>Start with a consult or enroll in the program that fits your dog.</p>
+        <h2>Ready to begin?</h2>
+        <p>Start with a consult or join the waitlist for the program that fits your dog.</p>
         <button type="button" className="cinema-btn cinema-btn--ink" onClick={() => navigate('/booking')}>
-          Enroll / book
+          Book training
         </button>
       </MotionReveal>
     </div>
