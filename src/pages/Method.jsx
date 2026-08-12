@@ -41,6 +41,9 @@ export default function Method() {
           <p className="method-hero__quote">
             “We bridge the gap between human and canine — building partnerships that hold in real life.”
           </p>
+          <p className="method-hero__area">
+            SW Sydney — Cumberland, Fairfield, Liverpool, Camden &amp; Macarthur
+          </p>
           <div className="method-hero__contacts">
             <a href="tel:0428077817">0428 077 817</a>
             <a href="mailto:caninecartel@gmail.com">caninecartel@gmail.com</a>

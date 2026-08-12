@@ -66,7 +66,7 @@ export default function Home() {
               </div>
               <div>
                 <dt>Where</dt>
-                <dd>SW Sydney &amp; surrounds</dd>
+                <dd>Cumberland · Fairfield · Liverpool · Camden · Macarthur</dd>
               </div>
             </dl>
             <button type="button" className="cinema-btn cinema-btn--soft" onClick={() => navigate('/about')}>
