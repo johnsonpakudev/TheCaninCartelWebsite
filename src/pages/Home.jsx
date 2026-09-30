@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import CinemaHero from '../components/home/CinemaHero';
 import ProgramsFilmstrip from '../components/home/ProgramsFilmstrip';
 import PathQuiz from '../components/home/PathQuiz';
 import ProofFeatured from '../components/home/ProofFeatured';
-import { SITE_IMAGES } from '../constants/images';
+import { MotionReveal } from '../components/MotionReveal';
 import '../components/home/home-cinema.css';
 
 export default function Home() {
@@ -10,33 +11,9 @@ export default function Home() {
 
   return (
     <div className="home-cinema">
-      <section className="cinema-hero" aria-label="Canine Cartel hero">
-        <div className="cinema-hero__media">
-          <img src={SITE_IMAGES.homeHero.src} alt={SITE_IMAGES.homeHero.alt} />
-          <div className="cinema-hero__shade" />
-        </div>
-        <div className="cinema-hero__content">
-          <div className="cinema-hero__brand">Canine Cartel</div>
-          <h1 className="cinema-hero__title">
-            Steady dogs.
-            <br />
-            <em>Clear handlers.</em>
-          </h1>
-          <p className="cinema-hero__sub">
-            Science-led training with Douglas Davenport — manners that hold at home, on walks, and across SW
-            Sydney.
-          </p>
-          <button
-            type="button"
-            className="cinema-btn cinema-btn--primary"
-            onClick={() => navigate('/booking', { state: { tab: 'consultation' } })}
-          >
-            Book training
-          </button>
-        </div>
-      </section>
+      <CinemaHero />
 
-      <section className="cinema-intro" aria-label="About Canine Cartel">
+      <MotionReveal as="section" className="cinema-intro" aria-label="About Canine Cartel">
         <div className="cinema-intro__grid">
           <div className="cinema-intro__lead">
             <span className="cinema-intro__eyebrow">A calmer way forward</span>
@@ -74,7 +51,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </section>
+      </MotionReveal>
 
       <ProgramsFilmstrip />
       <PathQuiz />

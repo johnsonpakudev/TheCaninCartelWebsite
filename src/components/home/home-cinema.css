@@ -31,7 +31,13 @@
   inset: 0;
 }
 
-.cinema-hero__media img {
+.cinema-hero__media-inner {
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.cinema-hero__media-inner img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -51,6 +57,7 @@
   z-index: 1;
   width: min(1200px, 100%);
   padding: 120px 40px 64px;
+  will-change: transform, opacity;
 }
 
 .cinema-hero__brand {
@@ -439,11 +446,43 @@
   background: #292524;
 }
 
-.filmstrip-panel__media img {
+.filmstrip-panel__media-inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.filmstrip-panel__media-inner--scrub {
+  width: 100%;
+  height: 100%;
+  will-change: transform, opacity;
+}
+
+.filmstrip-panel__media-inner--scrub,
+.filmstrip-panel__media-reveal--scrub .filmstrip-panel__media-inner--scrub {
+  transition: none;
+}
+
+.filmstrip-panel__media-inner--scrub img,
+.filmstrip-panel__media-reveal--scrub img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.filmstrip-panel__media-reveal--scrub {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.filmstrip-stacked .filmstrip-panel__media-reveal--scrub {
+  position: relative;
+  inset: auto;
+  order: -1;
+  min-height: 240px;
+  height: 260px;
 }
 
 .filmstrip-panel__media-cta {
@@ -740,6 +779,14 @@
 
   .motion-enter {
     opacity: 1;
+  }
+
+  .cinema-hero__media-inner,
+  .cinema-hero__content,
+  .filmstrip-panel__media-inner--scrub {
+    transform: none !important;
+    opacity: 1 !important;
+    will-change: auto;
   }
 }
 

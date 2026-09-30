@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import StackedScrollMedia from './StackedScrollMedia';
+import {
+  imageScrollStyleFromEnter,
+  panelEnterProgress,
+} from './scrollImageryMotion';
 import { SITE_IMAGES } from '../../constants/images';
 
 const PANELS = [
@@ -35,7 +40,21 @@ const PANELS = [
   },
 ];
 
-function Panel({ panel, onBook }) {
+function Panel({
+  panel,
+  onBook,
+  panelIndex,
+  enterT = 1,
+  scrollMotion = false,
+  stackedScroll = false,
+}) {
+  const scrubStyle =
+    scrollMotion && !stackedScroll ? imageScrollStyleFromEnter(enterT, panelIndex, true, 'filmstrip') : undefined;
+
+  const image = (
+    <img src={panel.img} alt={panel.imgAlt || `${panel.title} training`} loading="lazy" decoding="async" />
+  );
+
   return (
     <article className="filmstrip-panel">
       <div className="filmstrip-panel__copy">
@@ -49,7 +68,21 @@ function Panel({ panel, onBook }) {
         </ul>
       </div>
       <div className="filmstrip-panel__media">
-        <img src={panel.img} alt={panel.imgAlt || `${panel.title} training`} />
+        {stackedScroll ? (
+          <StackedScrollMedia panelIndex={panelIndex} motionEnabled={scrollMotion}>
+            {image}
+          </StackedScrollMedia>
+        ) : (
+          <div className="filmstrip-panel__media-inner">
+            <div
+              className="filmstrip-panel__media-inner--scrub"
+              style={scrubStyle}
+              data-panel-index={panelIndex}
+            >
+              {image}
+            </div>
+          </div>
+        )}
         <div className="filmstrip-panel__media-cta">
           <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => onBook(panel.title)}>
             {panel.btnText}
@@ -67,6 +100,7 @@ export default function ProgramsFilmstrip() {
   const [progress, setProgress] = useState(0);
   const [useStacked, setUseStacked] = useState(false);
   const [translatePx, setTranslatePx] = useState(0);
+  const [scrollMotion, setScrollMotion] = useState(true);
 
   function book(programTitle) {
     navigate('/booking', { state: { selectedProgram: programTitle } });
@@ -77,7 +111,9 @@ export default function ProgramsFilmstrip() {
     const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     function syncMode() {
-      setUseStacked(mobileMq.matches || reduceMq.matches);
+      const reduced = mobileMq.matches || reduceMq.matches;
+      setUseStacked(reduced);
+      setScrollMotion(!reduceMq.matches);
     }
 
     syncMode();
@@ -131,8 +167,8 @@ export default function ProgramsFilmstrip() {
           <h2>Training path</h2>
           <span>THREE LEVELS</span>
         </div>
-        {PANELS.map((panel) => (
-          <Panel key={panel.id} panel={panel} onBook={book} />
+        {PANELS.map((panel, index) => (
+          <Panel key={panel.id} panel={panel} panelIndex={index} onBook={book} stackedScroll scrollMotion={scrollMotion} />
         ))}
       </section>
     );
@@ -158,8 +194,15 @@ export default function ProgramsFilmstrip() {
             className="filmstrip-track"
             style={{ transform: `translate3d(-${translatePx}px, 0, 0)` }}
           >
-            {PANELS.map((panel) => (
-              <Panel key={panel.id} panel={panel} onBook={book} />
+            {PANELS.map((panel, index) => (
+              <Panel
+                key={panel.id}
+                panel={panel}
+                panelIndex={index}
+                onBook={book}
+                enterT={panelEnterProgress(progress, index, PANELS.length)}
+                scrollMotion={scrollMotion}
+              />
             ))}
           </div>
         </div>
