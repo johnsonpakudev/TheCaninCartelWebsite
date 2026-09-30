@@ -1,26 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MotionReveal } from '../MotionReveal';
+import StackedScrollMedia from './StackedScrollMedia';
+import {
+  imageScrollStyleFromEnter,
+  panelEnterProgress,
+} from './scrollImageryMotion';
 import { SITE_IMAGES } from '../../constants/images';
-
-function panelFocus(progress, index, panelCount) {
-  if (panelCount <= 1) return 1;
-  const peak = progress * (panelCount - 1);
-  return Math.max(0, 1 - Math.abs(peak - index));
-}
-
-function imageScrollStyle(focus, motionEnabled) {
-  if (!motionEnabled) return undefined;
-  const eased = focus * focus;
-  const slideX = (1 - eased) * 36;
-  const slideY = (1 - eased) * 18;
-  const scale = 1 + (1 - eased) * 0.08;
-  const opacity = 0.42 + eased * 0.58;
-  return {
-    opacity,
-    transform: `translate3d(${slideX}px, ${slideY}px, 0) scale(${scale})`,
-  };
-}
 
 const PANELS = [
   {
@@ -55,25 +40,19 @@ const PANELS = [
   },
 ];
 
-function Panel({ panel, onBook, imageFocus = 1, scrollMotion = false, stackedReveal = false }) {
-  const imgStyle = scrollMotion ? imageScrollStyle(imageFocus, true) : undefined;
+function Panel({
+  panel,
+  onBook,
+  panelIndex,
+  enterT = 1,
+  scrollMotion = false,
+  stackedScroll = false,
+}) {
+  const scrubStyle =
+    scrollMotion && !stackedScroll ? imageScrollStyleFromEnter(enterT, panelIndex, true, 'filmstrip') : undefined;
 
-  const media = (
-    <div className="filmstrip-panel__media">
-      <div className="filmstrip-panel__media-inner">
-        <img
-          src={panel.img}
-          alt={panel.imgAlt || `${panel.title} training`}
-          style={imgStyle}
-          className={scrollMotion ? 'filmstrip-panel__media-img--scrub' : undefined}
-        />
-      </div>
-      <div className="filmstrip-panel__media-cta">
-        <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => onBook(panel.title)}>
-          {panel.btnText}
-        </button>
-      </div>
-    </div>
+  const image = (
+    <img src={panel.img} alt={panel.imgAlt || `${panel.title} training`} loading="lazy" decoding="async" />
   );
 
   return (
@@ -88,13 +67,28 @@ function Panel({ panel, onBook, imageFocus = 1, scrollMotion = false, stackedRev
           ))}
         </ul>
       </div>
-      {stackedReveal ? (
-        <MotionReveal className="filmstrip-panel__media-reveal motion-reveal--slide-x motion-reveal--from-end">
-          {media}
-        </MotionReveal>
-      ) : (
-        media
-      )}
+      <div className="filmstrip-panel__media">
+        {stackedScroll ? (
+          <StackedScrollMedia panelIndex={panelIndex} motionEnabled={scrollMotion}>
+            {image}
+          </StackedScrollMedia>
+        ) : (
+          <div className="filmstrip-panel__media-inner">
+            <div
+              className="filmstrip-panel__media-inner--scrub"
+              style={scrubStyle}
+              data-panel-index={panelIndex}
+            >
+              {image}
+            </div>
+          </div>
+        )}
+        <div className="filmstrip-panel__media-cta">
+          <button type="button" className="cinema-btn cinema-btn--amber" onClick={() => onBook(panel.title)}>
+            {panel.btnText}
+          </button>
+        </div>
+      </div>
     </article>
   );
 }
@@ -173,8 +167,8 @@ export default function ProgramsFilmstrip() {
           <h2>Training path</h2>
           <span>THREE LEVELS</span>
         </div>
-        {PANELS.map((panel) => (
-          <Panel key={panel.id} panel={panel} onBook={book} stackedReveal />
+        {PANELS.map((panel, index) => (
+          <Panel key={panel.id} panel={panel} panelIndex={index} onBook={book} stackedScroll scrollMotion={scrollMotion} />
         ))}
       </section>
     );
@@ -204,8 +198,9 @@ export default function ProgramsFilmstrip() {
               <Panel
                 key={panel.id}
                 panel={panel}
+                panelIndex={index}
                 onBook={book}
-                imageFocus={panelFocus(progress, index, PANELS.length)}
+                enterT={panelEnterProgress(progress, index, PANELS.length)}
                 scrollMotion={scrollMotion}
               />
             ))}

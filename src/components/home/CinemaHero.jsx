@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SITE_IMAGES } from '../../constants/images';
+import { heroScrollLayers } from './scrollImageryMotion';
 
 export default function CinemaHero() {
   const navigate = useNavigate();
@@ -47,11 +48,14 @@ export default function CinemaHero() {
     };
   }, [motionEnabled]);
 
+  const { mediaP, copyP } = heroScrollLayers(scrollProgress);
   const mediaTransform = motionEnabled
-    ? `translate3d(0, ${scrollProgress * 32}px, 0) scale(${1 + scrollProgress * 0.07})`
+    ? `translate3d(${-mediaP * 28}px, ${mediaP * 36}px, 0) scale(${1 + mediaP * 0.08})`
     : undefined;
-  const contentTransform = motionEnabled ? `translate3d(0, ${scrollProgress * -28}px, 0)` : undefined;
-  const contentOpacity = motionEnabled ? 1 - scrollProgress * 0.4 : 1;
+  const contentTransform = motionEnabled
+    ? `translate3d(${copyP * 18}px, ${copyP * -32}px, 0)`
+    : undefined;
+  const contentOpacity = motionEnabled ? 1 - copyP * 0.42 : 1;
 
   return (
     <section ref={heroRef} className="cinema-hero" aria-label="Canine Cartel hero">
